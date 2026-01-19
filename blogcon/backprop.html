@@ -6,6 +6,8 @@
     <title>Document</title>
     <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="styleblog.css">
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 </head>
 <body>
     <main class="containerproj">
@@ -17,13 +19,210 @@
             <section class="contentblog">
             <section>
                 <article>
-                    <p>testing articles module</p>
-                    <img src="./images/back.jpg" width="auto" height="200px">
-                    <p>hello world</p>
-                    
+                    <h3>Backpropagation in Simple Linear Regression: A Single-Function Perspective</h3>
+                    <br>
+                    <h4>Introduction</h4>
+                    <br>
+                    <p>Backpropagation is often introduced in the context of deep neural networks, which can make it appear complex and intimidating. However, at its core, backpropagation is simply an efficient application of calculus specifically the chain rule to optimize model parameters.</p>
                 </article>
             </section>
         </section>
+        <section class="contentblog">
+            <section>
+                <article>
+                    <h4>Linear Regression model</h4>
+                    <br>
+                    <p>Consider a dataset with one input feature x and one output y.</p>
+                    <p>The linear regression model is defined as:</p>
+                    $$
+                    \hat{y} = f(x) = wx + b
+                    $$
+                    </article>
+            </section>
+        </section>
+
+        <section class="contentblog">
+            <section>
+                <article>
+                    <h4>Loss Function</h4>
+                    <br>
+                    <p>To measure how good or bad the model’s prediction is, we use a loss function.For simplicity, we choose Mean Squared Error (MSE) for a single data point:</p>
+                    <p>Loss function:</p>
+                        $$
+                        L = (y - \hat{y})^2
+                        $$
+
+                    <p>Substituting the model equation:</p>
+                        $$
+                        L = (y - (wx + b))^2
+                        $$
+                    <p>The objective of training is to minimize this loss by adjusting  w and b.</p>
+                </article>
+            </section>
+        </section>
+
+        <section class="contentblog">
+            <section>
+                <article>
+                    <h4>What Backpropagation Really Does</h4>
+                    <br>
+                    <p>Backpropagation answers one question:How should the parameters w and b change to reduce the loss?</p>
+                    <p>To answer this, we compute the gradients of the loss with respect to the parameters:</p>
+                    $$
+                    \frac{\partial L}{\partial w}, \quad \frac{\partial L}{\partial b}
+                    $$
+                    <p>These gradients tell us: <b>the direction of change the rate at which the loss changes</b></p>
+                </article>
+            </section>
+        </section>
+
+
+        <section class="contentblog">
+            <section>
+                <article>
+                    <h4>Applying the Chain Rule</h4>
+                    <br>
+                    <p>The loss depends on 𝑤 and 𝑏 indirectly through the prediction 𝑦.This is where the chain rule is used.</p>
+                    <p><b>Step 1: Gradient of Loss w.r.t Prediction</b></p>
+                    $$
+                    \frac{\partial L}{\partial \hat{y}} = -2 (y - \hat{y})
+                    $$
+                    <p>This term represents how sensitive the loss is to the prediction error.</p>
+                    <p><b>Step 2: Gradient of Prediction w.r.t Parameters</b></p>
+                    <p>from:</p>
+                    $$
+                    \hat{y} = wx + b
+                    $$
+
+                    <p>we get</p>
+                    $$
+                    \frac{\partial \hat{y}}{\partial w} = x
+                    $$
+                    $$
+                    \frac{\partial \hat{y}}{\partial b} = 1
+                    $$
+                    <p><b>Step 3: Final Gradients (Backpropagation)</b></p>
+                    <p>using the chain rule</p>
+                    <p>Gradient w.r.t Weight:</p>
+                    $$
+                    \frac{\partial L}{\partial w}
+                    =
+                    \frac{\partial L}{\partial \hat{y}}
+                    \cdot
+                    \frac{\partial \hat{y}}{\partial w}
+                    =
+                    -2 (y - \hat{y}) x
+                    $$
+                    <p>Gradient w.r.t Bias</p>
+                    $$
+                    \frac{\partial L}{\partial b}
+                    =
+                    \frac{\partial L}{\partial \hat{y}}
+                    \cdot
+                    \frac{\partial \hat{y}}{\partial b}
+                    =
+                    -2 (y - \hat{y})
+                    $$
+                    <p>this is the part called as propagation</p>
+                </article>
+            </section>
+        </section>
+        <section class="contentblog">
+            <section>
+                <article>
+                    <h4><b>Parameter Update Using Gradient Descent</b></h4>
+                    <p>one gradients are computed, parameters are updated using gradient descent.</p>
+                    $$
+                    w := w - \alpha \frac{\partial L}{\partial w}
+                    $$
+
+                    $$
+                    b := b - \alpha \frac{\partial L}{\partial b}
+                    $$
+                    <p>where α is the learning rate. </p>
+                    <p>This step moves the parameters in the direction that reduces the loss.</p>
+                    <p></p>
+                </article>
+            </section>
+        </section>
+        <section class="contentblog">
+            <section>
+                <p><b>Code</b></p>
+                <article class="code-window">
+    <div class="code-header">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="code-title">python</span>
+    </div>
+
+                <pre><code class="codeclass">
+            import numpy as np
+
+            # Data
+            X = np.array([1, 2, 3, 4, 5], dtype=float)
+            Y = np.array([1, 2, 3, 4, 5], dtype=float)
+
+            # Parameters
+            w = 0.0
+            b = 0.0
+            learning_rate = 0.01
+            epochs = 1000
+
+            # Forward pass
+            def predict(X, w, b):
+                return w * X + b
+
+            # Loss
+            def compute_loss(Y, Y_pred):
+                return np.mean((Y - Y_pred) ** 2)
+
+            # Backpropagation (Batch Gradients)
+            def compute_gradients(X, Y, Y_pred):
+                m = len(X)
+                dw = -(2 / m) * np.sum(X * (Y - Y_pred))
+                db = -(2 / m) * np.sum(Y - Y_pred)
+                return dw, db
+
+            # Training loop
+            for epoch in range(epochs):
+                Y_pred = predict(X, w, b)
+                dw, db = compute_gradients(X, Y, Y_pred)
+
+                w -= learning_rate * dw
+                b -= learning_rate * db
+
+                loss = compute_loss(Y, Y_pred)
+
+                if epoch % 50 == 0:
+                    print(f"Epoch {epoch}, Loss={loss:.6f}, w={w:.6f}, b={b:.6f}")
+
+            print("\nTraining finished")
+            print(f"Final parameters: w={w:.6f}, b={b:.6f}")
+            print("Predictions:", predict(X, w, b))
+            </code></pre>
+            </article>
+
+            </section>
+        </section>
+
+        <section class="contentblog">
+            <section class="image-section">
+                <article class="image-wrapper">
+                    <img src="./images/backprop.png" alt="code">
+                </article>
+            </section>
+        </section>
+
+        <section class="contentblog">
+            <section>
+                <article>
+                    <h4><b>Conclusion</b></h4>
+                    <p>Backpropagation is not exclusive to neural networks it exists even in the simplest linear regression model. In this single-function case, backpropagation reduces to applying the chain rule to compute gradients efficiently.</p>
+                </article>
+            </section>
+        </section>
+
     </main>
 </body>
 </html>
