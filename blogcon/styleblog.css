@@ -7,7 +7,22 @@
     text-align: center;
     padding-bottom: 4px;
     margin-bottom: 10px;
+    animation: swoopUp 0.7s ease-out forwards;
 }
+
+@keyframes swoopUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+}
+
+
 .formula{
     text-align: center;
 }
